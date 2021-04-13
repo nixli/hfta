@@ -10,7 +10,6 @@ docker run \
   --cap-add=ALL \
   --gpus all \
   -it \
-  --rm \
   --ipc=host \
   -e NVIDIA_MIG_CONFIG_DEVICES="all" \
   -v $(pwd):$(pwd) \
