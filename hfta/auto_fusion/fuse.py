@@ -59,8 +59,28 @@ def fuse_modules(modules):
             )
             fused_op = expand_to_hfta_op(module, B=B)
             hfta_modules[hfta_target] = fused_op
+
         elif node.op == "call_function":
-            val_map[node] = fused_graph.node_copy(node, lambda n: val_map[n])
+            cur_node = fused_graph.node_copy(node, lambda n: val_map[n])
+            if node.target == torch.flatten:
+                args = cur_node.args
+                if args[1] == 1:
+                    args = (args[0], 2)
+                    cur_node.args = args
+                # add a transpose to the args
+                users = cur_node.users
+
+                transpose_node = fused_graph.create_node(
+                    "call_function", torch.transpose,
+                    (cur_node, 0, 1), {}, "transpose_hfta"
+                    )
+
+                # This is the "sort of" equivalent of "replaces_all_uses_with"
+                # since the users of the fused graph has not been created yet
+                val_map[node] = transpose_node
+            else:
+                val_map[node] = cur_node
+
         elif node.op == "placeholder":
             # add new dimemsion of the palceholder
             val_map[node] = fused_graph.node_copy(node, lambda n: val_map[n])

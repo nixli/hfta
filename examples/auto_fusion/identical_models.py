@@ -17,6 +17,9 @@ def get_fake_dataloader(batch_size):
 if __name__ == "__main__":
     models = [
         torchvision.models.resnet18(pretrained=True),
+        torchvision.models.resnet18(pretrained=True),
+        torchvision.models.resnet18(pretrained=True),
+        torchvision.models.resnet18(pretrained=True),
         torchvision.models.resnet18(pretrained=False)
         ]
 
@@ -29,11 +32,11 @@ if __name__ == "__main__":
     start = time.time()
     for data, label in loader:
         data = data.cuda()
+
         data = data.unsqueeze(1).expand(-1, B, -1, -1, -1).contiguous()
         label = label.cuda()
 
-        print(data.shape)
+        # Do Fusion
         pred = fused(data)
-        print(pred.shape)
 
     print("Done, took {}s".format(time.time() - start))
