@@ -44,7 +44,6 @@ def fuse_modules(modules):
     val_map = {}
     hfta_modules = {}
 
-    current_B_dim = 0
     for node in fx_module.graph.nodes:
 
         hfta_target = "{}_hfta_B_{}".format(node.target, B)
