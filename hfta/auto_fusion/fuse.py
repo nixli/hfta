@@ -93,7 +93,6 @@ def fuse_modules(modules):
     fused = fx.GraphModule(hfta_modules, fused_graph)
     fused.recompile()
     fused.graph.lint()
-    print(fused)
     return fused
 
 def fuse_optimizers(optimizers):
