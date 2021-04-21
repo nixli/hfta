@@ -25,12 +25,8 @@ def fuse(entities):
 
 def fuse_modules(modules):
     B = len(modules)
-    if B == 1:
-        return modules[0]
-
 
     graphs = []
-
     for m in modules:
         graph_trace = fx.symbolic_trace(m)
         graphs.append(graph_trace)
